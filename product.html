@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SIDFIT — Product Details</title>
+  <meta name="description" content="SIDFIT — Premium unisex streetwear."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://res.cloudinary.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #ffffff; --bg-alt: #f4f4f2; --bg-dark: #0a0a0a;
+      --text: #0a0a0a; --text-light: #6b6b6b; --text-white: #ffffff;
+      --accent: #0a0a0a; --accent-hover: #2a2a2a;
+      --border: #e0e0e0; --border-dark: #1e1e1e;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --nav-height: 68px; --max-width: 1320px;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--text); font-family:var(--font-body); overflow-x:hidden; }
+    img { display:block; max-width:100%; }
+    a { text-decoration:none; color:inherit; }
+    button { cursor:pointer; border:none; background:none; font-family:var(--font-body); }
+    a:focus-visible, button:focus-visible { outline:2px solid var(--text); outline-offset:2px; }
+
+    .nav {
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      height:var(--nav-height); background:var(--bg);
+      border-bottom:1px solid var(--border);
+      display:flex; align-items:center; padding:0 40px; gap:24px;
+    }
+    .nav-logo { font-family:var(--font-display); font-size:1.7rem; letter-spacing:.1em; cursor:pointer; }
+    .nav-back {
+      font-size:.68rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+      color:var(--text-light); cursor:pointer; display:flex; align-items:center; gap:8px;
+    }
+    .nav-back:hover { color:var(--text); }
+    .nav-spacer { flex:1; }
+    .nav-cart-btn { position:relative; width:38px; height:38px; display:flex; align-items:center; justify-content:center; color:var(--text-light); cursor:pointer; }
+    .nav-cart-btn:hover { color:var(--text); }
+    .cart-count {
+      position:absolute; top:4px; right:4px; width:14px; height:14px; border-radius:50%;
+      background:var(--accent); color:#fff; font-size:.55rem; font-weight:700;
+      display:none; align-items:center; justify-content:center;
+    }
+
+    .pdp-wrap { margin-top:var(--nav-height); max-width:var(--max-width); margin-left:auto; margin-right:auto; padding:48px 40px 100px; }
+    .breadcrumb { font-size:.68rem; color:var(--text-light); letter-spacing:.05em; margin-bottom:32px; }
+    .breadcrumb a:hover { color:var(--text); text-decoration:underline; }
+
+    .pdp-grid { display:grid; grid-template-columns:1fr 1fr; gap:64px; }
+
+    /* GALLERY — large, full image, no cropping */
+    .pdp-gallery { position:sticky; top:calc(var(--nav-height) + 24px); align-self:start; }
+    .pdp-main-img-wrap {
+      aspect-ratio:1/1; background:var(--bg-alt); overflow:hidden; margin-bottom:14px;
+      position:relative; border:1px solid var(--border);
+    }
+    .pdp-main-img-wrap img { width:100%; height:100%; object-fit:contain; }
+    .pdp-zoom-hint {
+      position:absolute; bottom:12px; right:12px; background:rgba(255,255,255,.9);
+      font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; padding:6px 12px;
+      color:var(--text-light); pointer-events:none;
+    }
+    .pdp-thumbs { display:flex; gap:10px; flex-wrap:wrap; }
+    .pdp-thumb {
+      width:76px; height:76px; border:1px solid var(--border); cursor:pointer;
+      overflow:hidden; background:var(--bg-alt); transition:border-color .2s;
+    }
+    .pdp-thumb img { width:100%; height:100%; object-fit:contain; }
+    .pdp-thumb.active { border-color:var(--text); border-width:2px; }
+    .pdp-placeholder {
+      width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+      font-family:var(--font-display); font-size:8rem; color:rgba(0,0,0,.06);
+    }
+
+    /* INFO */
+    .pdp-info { padding-top:4px; }
+    .pdp-badge {
+      display:inline-block; font-size:.6rem; font-weight:700; letter-spacing:.16em;
+      text-transform:uppercase; padding:4px 10px; margin-bottom:16px;
+    }
+    .pdp-badge.new { background:var(--text); color:#fff; }
+    .pdp-badge.sale { background:#fff; color:#000; border:1px solid #ddd; }
+    .pdp-name { font-family:var(--font-display); font-size:2.6rem; letter-spacing:.02em; line-height:1.05; margin-bottom:16px; }
+    .pdp-price { font-size:1.6rem; font-weight:700; margin-bottom:28px; }
+    .pdp-price del { font-size:1.1rem; font-weight:400; color:var(--text-light); margin-right:10px; }
+    .pdp-section { margin-bottom:28px; }
+    .pdp-label {
+      font-size:.62rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+      color:var(--text-light); margin-bottom:12px;
+    }
+    .pdp-desc { font-size:.88rem; line-height:1.8; color:var(--text-light); font-weight:300; }
+    .size-grid { display:flex; gap:8px; flex-wrap:wrap; }
+    .size-opt {
+      width:48px; height:48px; border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+      font-size:.75rem; font-weight:600; cursor:pointer; transition:all .2s;
+    }
+    .size-opt:hover { border-color:var(--text); }
+    .size-opt.active { background:var(--text); color:#fff; border-color:var(--text); }
+    .size-opt.sold-out {
+      opacity:.35; cursor:not-allowed; text-decoration:line-through; color:var(--text-light); position:relative;
+    }
+    .size-stock-note { font-size:.65rem; color:var(--text-light); margin-top:10px; }
+    .qty-row { display:flex; align-items:center; gap:16px; margin-bottom:28px; }
+    .qty-btn-pdp {
+      width:36px; height:36px; border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center; font-size:1rem; cursor:pointer;
+    }
+    .qty-btn-pdp:hover { border-color:var(--text); }
+    .qty-display { font-size:1rem; font-weight:600; min-width:24px; text-align:center; }
+    .btn-add-cart-pdp {
+      width:100%; background:var(--accent); color:#fff;
+      font-size:.72rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+      padding:18px; transition:background .2s; margin-bottom:14px;
+    }
+    .btn-add-cart-pdp:hover { background:var(--accent-hover); }
+    .btn-add-cart-pdp:disabled { opacity:.5; cursor:not-allowed; }
+    .pdp-perks { display:flex; flex-direction:column; gap:10px; font-size:.75rem; color:var(--text-light); padding:20px 0; border-top:1px solid var(--border); margin-top:8px; }
+    .pdp-perks span { display:flex; align-items:center; gap:8px; }
+
+    .pdp-skel { background:var(--bg-alt); position:relative; overflow:hidden; }
+    .pdp-skel::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+      transform:translateX(-100%); animation:shimmer 1.3s infinite;
+    }
+    @keyframes shimmer { 100% { transform:translateX(100%); } }
+
+    .pdp-error { text-align:center; padding:120px 20px; color:var(--text-light); }
+    .pdp-error h2 { font-family:var(--font-display); font-size:2rem; color:var(--text); margin-bottom:12px; }
+
+    .toast {
+      position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
+      background:var(--text); color:#fff; font-size:.68rem; font-weight:700;
+      letter-spacing:.16em; text-transform:uppercase; padding:14px 32px; z-index:9999;
+      opacity:0; transition:opacity .3s; pointer-events:none; white-space:nowrap;
+      max-width:90vw; overflow:hidden; text-overflow:ellipsis;
+    }
+    .toast.show { opacity:1; }
+
+    @media (max-width:900px) {
+      .pdp-grid { grid-template-columns:1fr; gap:32px; }
+      .pdp-gallery { position:static; }
+      .pdp-wrap { padding:32px 20px 80px; }
+      .nav { padding:0 20px; }
+      .pdp-name { font-size:2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo" onclick="window.location.href='index.html'">SIDFIT</div>
+  <div class="nav-back" onclick="goBack()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Back to Shop
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-cart-btn" onclick="window.location.href='index.html#products'" title="Cart">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+    </svg>
+    <div class="cart-count" id="cartCount">0</div>
+  </div>
+</nav>
+
+<div class="pdp-wrap" id="pdpWrap">
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> / <a href="index.html#products">Products</a> / <span id="breadcrumbName">Loading...</span>
+  </div>
+
+  <div class="pdp-grid" id="pdpGrid">
+    <div class="pdp-gallery">
+      <div class="pdp-main-img-wrap pdp-skel" style="height:520px"></div>
+    </div>
+    <div class="pdp-info">
+      <div class="pdp-skel" style="height:24px;width:140px;margin-bottom:20px"></div>
+      <div class="pdp-skel" style="height:48px;width:80%;margin-bottom:16px"></div>
+      <div class="pdp-skel" style="height:28px;width:30%;margin-bottom:28px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CONFIG = {
+  BACKEND_URL: 'https://backend-tj98.onrender.com',
+};
+
+let product = null;
+let selectedSize = null;
+let qty = 1;
+let mainImgs = [];
+let mainImgIdx = 0;
+let cart = safeParseJSON(localStorage.getItem('sidfit_cart'), []);
+
+function safeParseJSON(str, fallback) {
+  try { return str ? JSON.parse(str) : fallback; } catch { return fallback; }
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+
+function getProductIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('id');
+}
+
+function goBack() {
+  if (window.history.length > 1 && document.referrer.includes(window.location.host)) {
+    window.history.back();
+  } else {
+    window.location.href = 'index.html#products';
+  }
+}
+
+function updateCartCount() {
+  const total = cart.reduce((s, i) => s + i.qty, 0);
+  const cc = document.getElementById('cartCount');
+  cc.textContent = total;
+  cc.style.display = total > 0 ? 'flex' : 'none';
+}
+
+function productImgUrl(img) {
+  if (!img) return null;
+  return typeof img === 'string' ? img : img.url;
+}
+
+async function loadProduct() {
+  const id = getProductIdFromUrl();
+  if (!id) { renderError('No product specified.'); return; }
+
+  try {
+    const res = await fetch(`${CONFIG.BACKEND_URL}/api/products/${id}`);
+    if (!res.ok) { renderError('This product could not be found. It may have been removed.'); return; }
+    product = await res.json();
+    renderProduct();
+  } catch (e) {
+    renderError('Could not load this product. Please check your connection and try again.');
+  }
+}
+
+function renderError(msg) {
+  document.getElementById('pdpGrid').innerHTML = `
+    <div class="pdp-error" style="grid-column:1/-1">
+      <h2>Product Not Found</h2>
+      <p>${escapeHtml(msg)}</p>
+      <p style="margin-top:24px"><a href="index.html#products" style="text-decoration:underline;color:var(--text)">← Back to all products</a></p>
+    </div>`;
+}
+
+function renderProduct() {
+  document.title = `${product.name} — SIDFIT`;
+  document.getElementById('breadcrumbName').textContent = product.name;
+
+  mainImgs = (product.images || []).map(productImgUrl).filter(Boolean);
+  mainImgIdx = 0;
+
+  const sizeStock = product.sizeStock || {};
+  const sizes = Object.keys(sizeStock);
+  const allSoldOut = sizes.length > 0 && sizes.every(s => sizeStock[s] === 0);
+
+  document.getElementById('pdpGrid').innerHTML = `
+    <div class="pdp-gallery">
+      <div class="pdp-main-img-wrap" id="pdpMainImgWrap">
+        ${mainImgs.length
+          ? `<img id="pdpMainImg" src="${mainImgs[0]}" alt="${escapeHtml(product.name)}"/>`
+          : `<div class="pdp-placeholder">SF</div>`}
+      </div>
+      ${mainImgs.length > 1 ? `
+        <div class="pdp-thumbs" id="pdpThumbs">
+          ${mainImgs.map((src, i) => `
+            <div class="pdp-thumb ${i === 0 ? 'active' : ''}" data-idx="${i}" onclick="setMainImg(${i})">
+              <img src="${src}" alt="${escapeHtml(product.name)} ${i+1}" loading="lazy"/>
+            </div>
+          `).join('')}
+        </div>` : ''}
+    </div>
+    <div class="pdp-info">
+      ${product.badge ? `<div class="pdp-badge ${product.badge}">${product.badge === 'new' ? 'New' : 'Sale'}</div>` : ''}
+      <h1 class="pdp-name">${escapeHtml(product.name)}</h1>
+      <div class="pdp-price">${product.mrp ? `<del>₹${product.mrp}</del>` : ''}₹${product.price}</div>
+
+      ${sizes.length ? `
+        <div class="pdp-section">
+          <div class="pdp-label">Select Size</div>
+          <div class="size-grid" id="sizeGrid">
+            ${sizes.map(s => {
+              const stock = sizeStock[s];
+              const soldOut = stock === 0;
+              return `<div class="size-opt ${soldOut ? 'sold-out' : ''}" data-size="${escapeHtml(s)}"
+                onclick="${soldOut ? `showToast('Size ${escapeHtml(s)} is sold out')` : `selectSize('${escapeHtml(s)}')`}"
+                title="${soldOut ? 'Sold out' : `${stock} left`}">${escapeHtml(s)}</div>`;
+            }).join('')}
+          </div>
+          <div class="size-stock-note">Crossed-out sizes are sold out.</div>
+        </div>` : ''}
+
+      <div class="pdp-section">
+        <div class="pdp-label">Quantity</div>
+        <div class="qty-row">
+          <div class="qty-btn-pdp" onclick="changeQty(-1)">−</div>
+          <div class="qty-display" id="qtyDisplay">1</div>
+          <div class="qty-btn-pdp" onclick="changeQty(1)">+</div>
+        </div>
+      </div>
+
+      <button class="btn-add-cart-pdp" id="addBtn" onclick="addToCart()" ${allSoldOut ? 'disabled' : ''}>
+        ${allSoldOut ? 'Out of Stock' : 'Add to Bag'}
+      </button>
+
+      ${product.desc ? `
+        <div class="pdp-section">
+          <div class="pdp-label">About this product</div>
+          <p class="pdp-desc">${escapeHtml(product.desc)}</p>
+        </div>` : ''}
+
+      <div class="pdp-perks">
+        <span>✓ Free delivery on orders above ₹999</span>
+        <span>✓ 7-day easy returns</span>
+        <span>✓ 100% secure payment via Razorpay</span>
+      </div>
+    </div>
+  `;
+}
+
+function setMainImg(idx) {
+  mainImgIdx = idx;
+  document.getElementById('pdpMainImg').src = mainImgs[idx];
+  document.querySelectorAll('.pdp-thumb').forEach((t, i) => t.classList.toggle('active', i === idx));
+}
+
+function selectSize(size) {
+  selectedSize = size;
+  document.querySelectorAll('.size-opt').forEach(el => {
+    el.classList.toggle('active', el.dataset.size === size);
+  });
+}
+
+function changeQty(delta) {
+  qty = Math.max(1, qty + delta);
+  document.getElementById('qtyDisplay').textContent = qty;
+}
+
+function addToCart() {
+  const sizes = Object.keys(product.sizeStock || {});
+  if (sizes.length && !selectedSize) { showToast('Please select a size'); return; }
+
+  const size = selectedSize || 'Free Size';
+  const existing = cart.find(i => i.id === product.id && i.size === size);
+  if (existing) existing.qty += qty;
+  else cart.push({
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    mrp: product.mrp,
+    image: mainImgs[0] || null,
+    size, qty
+  });
+
+  localStorage.setItem('sidfit_cart', JSON.stringify(cart));
+  updateCartCount();
+  showToast(`${product.name} added to bag!`);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._hideTimer);
+  t._hideTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateCartCount();
+  loadProduct();
+});
+</script>
+</body>
+</html>
